@@ -1,5 +1,5 @@
 const express = require("express")
-const question = require("../routers/question")
+const question = require("../routers/questions")
 const auth = require("../routers/auth")
 const router = express.Router()
 
