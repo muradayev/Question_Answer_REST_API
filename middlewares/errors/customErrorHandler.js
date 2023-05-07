@@ -1,8 +1,10 @@
 const customErrorHandler = (err, req, res, next) => {
-    console.error("Custom Error Handler")
+    let customError = err;
+    console.log(customError.message, customError.status)
 
-    res.status(400).json({
-        success: false
+    res.status(customError.status || 500).json({
+        success: false,
+        message: customError.message || "Internal server error"
     })
 }
 
