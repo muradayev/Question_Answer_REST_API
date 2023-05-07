@@ -6,6 +6,9 @@ const customErrorHandler = require("./middlewares/errors/customErrorHandler")
 
 const app = express()
 
+// Express - Body middleware
+app.use(express.json())
+
 // Environments variables
 dotenv.config({
     path: "./config/env/config.env"
@@ -14,11 +17,12 @@ const PORT = process.env.PORT
 const NODE_ENV = process.env.NODE_ENV
 
 // MongoDB connection
-//connectDatabase()
+connectDatabase()
 
+// Routers middleware
 app.use("/api", routers)
 
-// Error handling
+// Error handling middleware
 app.use(customErrorHandler)
 
 app.listen(PORT, () => {
