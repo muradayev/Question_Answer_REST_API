@@ -4,8 +4,10 @@ const validateUserInput = (email, password) => {
     return email && password
 }
 
-const comparePassword = (password, hashedPassword) => {
-    return bcrypt.compare(password, hashedPassword)
+const comparePassword = async (password, hashedPassword) => {
+    const result = await bcrypt.compare(password, hashedPassword)
+    console.log(result)
+    return result
 }
 
 module.exports = {
