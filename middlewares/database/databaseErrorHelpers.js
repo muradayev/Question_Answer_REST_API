@@ -9,7 +9,7 @@ const checkUserExists = asyncErrorWrapper(async (req, res, next) => {
     if (!user) {
         return next(new CustomError("There is no such user with that id", 400))
     }
-
+    req.data = user
     next()
 })
 
