@@ -87,6 +87,8 @@ UserSchema.methods.getResetPasswordTokenFromUser = function () {
 
     this.resetPasswordToken = resetPasswordToken
     this.resetPasswordExpire = Date.now() + parseInt(RESET_PASSWORD_EXPIRE)
+
+    return resetPasswordToken
 }
 
 // Hooks

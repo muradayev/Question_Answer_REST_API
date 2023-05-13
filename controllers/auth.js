@@ -3,6 +3,7 @@ const CustomError = require("../helpers/error/CustomError")
 const asyncErrorWrapper = require("express-async-handler")
 const { sendJwtToClient } = require("../helpers/authorization/tokenHelpers")
 const { validateUserInput, comparePassword } = require("../helpers/input/inputHelpers")
+const sendEmail = require("../helpers/libraries/sendEmail")
 
 const register = asyncErrorWrapper(async (req, res, next) => {
     const { name, email, password, role } = req.body
@@ -84,9 +85,60 @@ const forgotPassword = asyncErrorWrapper(async (req, res, next) => {
     const resetPasswordToken = user.getResetPasswordTokenFromUser()
     await user.save()
 
-    res.json({
+    const resetPasswordUrl = `http:localhost:5000/api/auth/resetPassword?resetPasswordToken=${resetPasswordToken}`
+    const emailTemplate = `
+        <h3>Reset your password</h3>
+        <p>This <a href='${resetPasswordUrl}' target='_blank'>link</a> will expire in 1 hour</p>
+    `
+
+    try {
+        await sendEmail({
+            from: process.env.SMTP_USER,
+            to: resetEmail,
+            subject: "Reset your password",
+            html: emailTemplate
+        })
+        return res.status(200).json({
+            success: true,
+            message: "Token sent to your email"
+        })
+    } catch (err) {
+        //console.log(err)
+        user.resetPasswordToken = undefined
+        user.resetPasswordExpire = undefined
+
+        await user.save()
+
+        return next(new CustomError("Email could not be sent", 500))
+    }
+})
+
+const resetPassword = asyncErrorWrapper(async (req, res, next) => {
+    const { resetPasswordToken } = req.query
+    const { password } = req.body
+
+    if (!resetPasswordToken) {
+        return next(new CustomError("Please provide a valid reset token", 400))
+    }
+
+    let user = await User.findOne({
+        resetPasswordToken: resetPasswordToken,
+        resetPasswordExpire: { $gt: Date.now() }
+    })
+
+    if (!user) {
+        return next(new CustomError("Invalid token or Session expired", 404))
+    }
+
+    user.password = password
+    user.resetPasswordToken = undefined
+    user.resetPasswordExpire = undefined
+
+    await user.save()
+
+    return res.status(200).json({
         success: true,
-        message: "Token sent to your email"
+        message: "Reset password processed successfully"
     })
 })
 
@@ -96,5 +148,6 @@ module.exports = {
     login,
     logout,
     imageUpload,
-    forgotPassword
+    forgotPassword,
+    resetPassword
 }
