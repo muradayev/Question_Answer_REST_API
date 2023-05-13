@@ -6,7 +6,6 @@ const validateUserInput = (email, password) => {
 
 const comparePassword = async (password, hashedPassword) => {
     const result = await bcrypt.compare(password, hashedPassword)
-    console.log(result)
     return result
 }
 
