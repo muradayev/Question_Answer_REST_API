@@ -10,8 +10,8 @@ const storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
         const extension = file.mimetype.split("/")[1]
-        req.saveProfileImage = "image_" + req.user.id + "." + extension
-        cb(null, req.saveProfileImage)
+        req.savedProfileImage = "image_" + req.user.id + "." + extension
+        cb(null, req.savedProfileImage)
     }
 })
 

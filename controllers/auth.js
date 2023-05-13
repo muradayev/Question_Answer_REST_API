@@ -51,9 +51,16 @@ const logout = asyncErrorWrapper(async (req, res, next) => {
 })
 
 const imageUpload = asyncErrorWrapper(async (req, res, next) => {
+    const user = await User.findByIdAndUpdate(req.user.id, {
+        "profile_image": req.savedProfileImage
+    }, {
+        new: true,
+        runValidators: true
+    })
     res.status(200).json({
         success: true,
-        message: "Image was uploaded successfully"
+        message: "Image was uploaded successfully",
+        data: user
     })
 })
 
@@ -67,10 +74,27 @@ const getUser = (req, res, next) => {
     })
 }
 
+const forgotPassword = asyncErrorWrapper(async (req, res, next) => {
+    const resetEmail = req.body.email
+    const user = await User.findOne({ email: resetEmail })
+    if (!user) {
+        return next(new CustomError("Invalid email"))
+    }
+
+    const resetPasswordToken = user.getResetPasswordTokenFromUser()
+    await user.save()
+
+    res.json({
+        success: true,
+        message: "Token sent to your email"
+    })
+})
+
 module.exports = {
     register,
     getUser,
     login,
     logout,
-    imageUpload
+    imageUpload,
+    forgotPassword
 }
