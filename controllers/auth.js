@@ -149,6 +149,10 @@ const updateDetails = asyncErrorWrapper(async (req, res, next) => {
         runValidators: true
     })
 
+    if (!user) {
+        return next(new CustomError("There is no user with that id"))
+    }
+
     return res.status(200).json({
         success: true,
         data: user
