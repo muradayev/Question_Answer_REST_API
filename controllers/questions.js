@@ -16,6 +16,43 @@ const askNewQuestion = asyncErrorWrapper(async (req, res, next) => {
     })
 })
 
+const getAllQuestions = asyncErrorWrapper(async (req, res, next) => {
+    const questions = await Question.find()
+    if (!questions) {
+        return next(new CustomError("There is no added question"))
+    }
+    return res.status(200).json({
+        success: true,
+        data: questions
+    })
+})
+
+const getQuestionById = asyncErrorWrapper(async (req, res, next) => {
+    return res.status(200).json({
+        success: true,
+        data: req.data
+    })
+})
+
+const updateQuestion = asyncErrorWrapper(async (req, res, next) => {
+    const { id } = req.params
+    const { title, content } = req.body
+
+    let question = await Question.findById(id)
+
+    question.title = title
+    question.content = content
+    question = await question.save()
+
+    return res.status(200).json({
+        success: true,
+        data: question
+    })
+})
+
 module.exports = {
-    askNewQuestion
+    askNewQuestion,
+    getAllQuestions,
+    getQuestionById,
+    updateQuestion
 }
