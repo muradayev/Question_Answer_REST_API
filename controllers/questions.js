@@ -34,7 +34,7 @@ const getQuestionById = asyncErrorWrapper(async (req, res, next) => {
     })
 })
 
-const updateQuestion = asyncErrorWrapper(async (req, res, next) => {
+const updateQuestionById = asyncErrorWrapper(async (req, res, next) => {
     const { id } = req.params
     const { title, content } = req.body
 
@@ -50,9 +50,20 @@ const updateQuestion = asyncErrorWrapper(async (req, res, next) => {
     })
 })
 
+const deleteQuestionById = asyncErrorWrapper(async (req, res, next) => {
+    const { id } = req.params
+    await Question.findByIdAndRemove(id)
+
+    return res.status(200).json({
+        success: true,
+        message: "Question was deleted successfully"
+    })
+})
+
 module.exports = {
     askNewQuestion,
     getAllQuestions,
     getQuestionById,
-    updateQuestion
+    updateQuestionById,
+    deleteQuestionById
 }
