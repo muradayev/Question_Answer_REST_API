@@ -142,6 +142,19 @@ const resetPassword = asyncErrorWrapper(async (req, res, next) => {
     })
 })
 
+const updateDetails = asyncErrorWrapper(async (req, res, next) => {
+    const updateInformation = req.body
+    const user = await User.findByIdAndUpdate(req.user.id, updateInformation, {
+        new: true,
+        runValidators: true
+    })
+
+    return res.status(200).json({
+        success: true,
+        data: user
+    })
+})
+
 module.exports = {
     register,
     getUser,
@@ -149,5 +162,6 @@ module.exports = {
     logout,
     imageUpload,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    updateDetails
 }
