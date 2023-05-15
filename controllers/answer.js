@@ -22,9 +22,11 @@ const addNewAnswerToQuestion = asyncErrorWrapper(async (req, res, next) => {
     })
 })
 
-const getAllAnswersOfQuestion = asyncErrorWrapper(async (req, res, next) => {
+const getAnswersOfQuestion = asyncErrorWrapper(async (req, res, next) => {
     const { question_id } = req.params
+
     const question = await Question.findById(question_id)
+
     const answers = question.answers
 
     return res.status(200).json({
@@ -34,7 +36,28 @@ const getAllAnswersOfQuestion = asyncErrorWrapper(async (req, res, next) => {
     })
 })
 
+const getSingleAnswer = asyncErrorWrapper(async (req, res, next) => {
+    const { answer_id } = req.params
+
+    const answer = await Answer
+        .findById(answer_id)
+        .populate({
+            path: "question",
+            select: "title content",
+        })
+        .populate({
+            path: "user",
+            select: "name role "
+        })
+
+    return res.status(200).json({
+        success: true,
+        data: answer
+    })
+})
+
 module.exports = {
     addNewAnswerToQuestion,
-    getAllAnswersOfQuestion
+    getAnswersOfQuestion,
+    getSingleAnswer
 }
