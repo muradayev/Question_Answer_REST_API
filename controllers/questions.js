@@ -18,9 +18,6 @@ const askNewQuestion = asyncErrorWrapper(async (req, res, next) => {
 
 const getAllQuestions = asyncErrorWrapper(async (req, res, next) => {
     const questions = await Question.find()
-    if (questions.length === 0) {
-        return next(new CustomError("There is no added question"))
-    }
     return res.status(200).json({
         success: true,
         data: questions
@@ -60,10 +57,27 @@ const deleteQuestionById = asyncErrorWrapper(async (req, res, next) => {
     })
 })
 
+const likeQuestion = asyncErrorWrapper(async (req, res, next) => {
+    const { id } = req.params
+    const question = await Question.findById(id)
+
+    if (question.likes.includes(req.user.id)) {
+        return next(new CustomError("You already liked this question", 400))
+    }
+    question.likes.push(req.user.id)
+    await question.save()
+
+    return res.status(200).json({
+        success: true,
+        data: question
+    })
+})
+
 module.exports = {
     askNewQuestion,
     getAllQuestions,
     getQuestionById,
     updateQuestionById,
-    deleteQuestionById
+    deleteQuestionById,
+    likeQuestion
 }

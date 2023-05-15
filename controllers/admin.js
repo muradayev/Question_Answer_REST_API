@@ -5,9 +5,6 @@ const asyncErrorWrapper = require("express-async-handler")
 const blockUser = asyncErrorWrapper(async (req, res, next) => {
     const { id } = req.params
     const user = await User.findById(id)
-    if (!user) {
-        return next(new CustomError("There is no user with that id"))
-    }
 
     user.blocked = !user.blocked
     await user.save()
@@ -22,15 +19,11 @@ const deleteUser = asyncErrorWrapper(async (req, res, next) => {
     const { id } = req.params
     const user = await User.findById(id)
 
-    if (!user) {
-        return next(new CustomError("There is no user with that id"))
-    }
-
     await user.deleteOne()
 
     return res.status(200).json({
         success: true,
-        message: "User deleted successfully"
+        message: "User was deleted successfully"
     })
 })
 

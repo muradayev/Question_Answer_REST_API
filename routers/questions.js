@@ -4,11 +4,13 @@ const { askNewQuestion,
     getAllQuestions,
     getQuestionById,
     updateQuestionById,
-    deleteQuestionById } = require("../controllers/questions")
+    deleteQuestionById,
+    likeQuestion } = require("../controllers/questions")
 const { getAccessToRoute, getQuestionOwnerAccess } = require("../middlewares/authorization/auth")
 const router = express.Router()
 
 router.get("/", getAllQuestions)
+router.get("/:id/like", [getAccessToRoute, checkQuestionExists], likeQuestion)
 router.get("/:id", checkQuestionExists, getQuestionById)
 router.post("/ask", getAccessToRoute, askNewQuestion)
 router.put("/:id/update", [getAccessToRoute, checkQuestionExists, getQuestionOwnerAccess], updateQuestionById)

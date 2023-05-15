@@ -108,7 +108,7 @@ UserSchema.pre("save", function (next) {
 })
 
 UserSchema.pre("deleteOne", { document: true }, async function (next) {
-    await mongoose.model("Question").deleteMany({
+    await Question.deleteMany({
         user: this._id
     })
 })
