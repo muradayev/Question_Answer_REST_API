@@ -78,7 +78,7 @@ const undoLikeQuestion = asyncErrorWrapper(async (req, res, next) => {
     const question = await Question.findById(id)
 
     if (!question.likes.includes(req.user.id)) {
-        return next(new CustomError("You didn't like this question", 400))
+        return next(new CustomError("You can't undo like for this question", 400))
     }
 
     const userIdIndex = question.likes.indexOf(req.user.id)
