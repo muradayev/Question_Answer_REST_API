@@ -56,8 +56,23 @@ const getSingleAnswer = asyncErrorWrapper(async (req, res, next) => {
     })
 })
 
+const updateAnswer = asyncErrorWrapper(async (req, res, next) => {
+    const { answer_id } = req.params
+    const { content } = req.body
+
+    let answer = await Answer.findById(answer_id)
+    answer.content = content
+    await answer.save()
+
+    return res.status(200).json({
+        success: true,
+        data: answer
+    })
+})
+
 module.exports = {
     addNewAnswerToQuestion,
     getAnswersOfQuestion,
-    getSingleAnswer
+    getSingleAnswer,
+    updateAnswer
 }
