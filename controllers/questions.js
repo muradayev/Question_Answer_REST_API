@@ -18,7 +18,7 @@ const askNewQuestion = asyncErrorWrapper(async (req, res, next) => {
 
 const getAllQuestions = asyncErrorWrapper(async (req, res, next) => {
     const questions = await Question.find()
-    if (!questions) {
+    if (questions.length === 0) {
         return next(new CustomError("There is no added question"))
     }
     return res.status(200).json({
@@ -40,8 +40,8 @@ const updateQuestionById = asyncErrorWrapper(async (req, res, next) => {
 
     let question = await Question.findById(id)
 
-    question.title = title
-    question.content = content
+    question.title = !title ? question.title : title
+    question.content = !content ? question.content : content
     question = await question.save()
 
     return res.status(200).json({

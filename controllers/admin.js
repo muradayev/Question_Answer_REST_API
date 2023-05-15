@@ -20,7 +20,14 @@ const blockUser = asyncErrorWrapper(async (req, res, next) => {
 
 const deleteUser = asyncErrorWrapper(async (req, res, next) => {
     const { id } = req.params
-    await User.findByIdAndRemove(id)
+    const user = await User.findById(id)
+
+    if (!user) {
+        return next(new CustomError("There is no user with that id"))
+    }
+
+    await user.deleteOne()
+
     return res.status(200).json({
         success: true,
         message: "User deleted successfully"
