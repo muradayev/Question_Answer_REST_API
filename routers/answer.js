@@ -5,11 +5,13 @@ const { checkQuestionAndAnswerExists } = require("../middlewares/database/databa
 const { addNewAnswerToQuestion,
     getAnswersOfQuestion,
     getSingleAnswer,
-    updateAnswer } = require("../controllers/answer")
+    updateAnswer,
+    deleteAnswer } = require("../controllers/answer")
 
 router.post("/", [getAccessToRoute], addNewAnswerToQuestion)
 router.get("/", getAnswersOfQuestion)
 router.get("/:answer_id", [checkQuestionAndAnswerExists], getSingleAnswer)
 router.put("/:answer_id/update", [checkQuestionAndAnswerExists, getAccessToRoute, getAnswerOwnerAccess], updateAnswer)
+router.delete("/:answer_id/delete", [checkQuestionAndAnswerExists, getAccessToRoute, getAnswerOwnerAccess], deleteAnswer)
 
 module.exports = router
