@@ -5,7 +5,6 @@ const connectDatabase = require("./helpers/database/connectDatabase")
 const customErrorHandler = require("./middlewares/errors/customErrorHandler")
 const path = require("path")
 
-
 const app = express()
 
 // Express - Body middleware
